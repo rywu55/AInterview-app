@@ -1,6 +1,6 @@
 # AInterview-app
 
-To run the app, run the following commands
+***To run the app, run the following commands***
 
 git clone "with the https inside the clone button in git"
 
@@ -12,11 +12,16 @@ npm install
 
 npm start
 
-To make changes/push to git
+***To make changes/push to git***
+
 git pull ***TO UPDATE TO UPDATED STATUS***
+
 git branch ***SHOULD SAY BRANCH IS ON MASTER***
+
 git add *
+
 git commit -m "message"
+
 git push -u origin master ***IF FIRST PUSH**
 
 otherwise
