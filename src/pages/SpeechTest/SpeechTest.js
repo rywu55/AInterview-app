@@ -1,12 +1,13 @@
 'use strict'
 import React, {Component} from 'react';
+import SpeechRecognition from 'react-speech-recognition'
 
 
 //----------------------------------------
 //         Speech Recognition
 //----------------------------------------
 
-const SpeechRecognition = SpeechRecognition || window.webkitSpeechRecognition
+// const SpeechRecognition = SpeechRecognition || window.webkitSpeechRecognition
 const recognition = new SpeechRecognition()
 
 recognition.continuous = true
