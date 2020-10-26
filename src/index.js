@@ -3,11 +3,13 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import Parser from './parser';
 
 ReactDOM.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
+  <Parser url="/api/parser"/>,
   document.getElementById('root')
 );
 
