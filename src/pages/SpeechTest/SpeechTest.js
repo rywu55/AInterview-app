@@ -7,7 +7,6 @@ import styles from './SpeechTest.css'
 //         Speech Recognition
 //----------------------------------------
 
-// const SpeechRecognition = SpeechRecognition || window.webkitSpeechRecognition
 const SpeechRecognition =  window.webkitSpeechRecognition
 const recognition = new SpeechRecognition()
 
@@ -116,33 +115,46 @@ class Speech extends Component {
 
     render() {
         return (
-            <div className='container'>
-                <h1>AInterview</h1>
-                <button id='microphone-btn' className='toggleButton' onClick={this.toggleListen} />
-                <div id='interim' className='interim'></div>
-                <div id='final' className='final'></div>
-                <div className='final'>
-                    <p>Current Answer</p>
-                    {this.state.userResponse}
+            <div className='content'>
+                <div className='headerContent'>
+                    <h1 className='titleHeader'>Welcome to AInterview</h1>
                 </div>
-                <div className='final'>
-                    <p>All Answers</p>
-                    {this.state.allResponses.map((response)=> (
-                        <p>{response}</p>
-                    ))}
+                <div className='pageContent'>
+                    <div className='resumeContainer'>
+                        <h1 className='titleHeader'>Insert Resume</h1>
+                        <form action="/parse" className='resumeForm' method="post" encType="multipart/form-data">
+                            <input type="file" name="file"></input>
+                            <input type="submit" name="update" value="Submit Resume" />
+                        </form>
+                    </div>
+                    <div className='interviewContainer'>
+                        <h1 className='titleHeader'>Start Interviewing</h1>
+                        <button id='microphone-btn' className='toggleButton' onClick={this.toggleListen} />
+                        <div id='interim' className='interim'></div>
+                        <div id='final' className='final'></div>
+                        <div className='final'>
+                            <p className='small-component'>Current Answer</p>
+                            {this.state.userResponse}
+                        </div>
+                        <div className='final'>
+                            <p className='small-component'>All Answers</p>
+                            {this.state.allResponses.map((response)=> (
+                                <p>{response}</p>
+                            ))}
+                        </div>
+                        <button id='done-btn' className='finishButton' onClick={this.analyzeScore} />
+                        <div className='final'>
+                            <p className='small-component'>Improvements</p>
+                            {this.state.recommendations.map((recommendation) => {
+                                // <div>
+                                //     <p>{recommendation.category}</p>
+                                //     <p>{recommendation.value}</p>
+                                //     <p>{recommendation.description}</p>
+                                // </div>
+                            })}
+                        </div>
+                    </div>
                 </div>
-                <button id='done-btn' className='finishButton' onClick={this.analyzeScore} />
-                <div className='final'>
-                    <h2>How to Improve!</h2>
-                    {this.state.recommendations.map((recommendation) => {
-                        // <div>
-                        //     <p>{recommendation.category}</p>
-                        //     <p>{recommendation.value}</p>
-                        //     <p>{recommendation.description}</p>
-                        // </div>
-                    })}
-                </div>
-
             </div>
         )
     }
