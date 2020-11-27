@@ -21,8 +21,8 @@ action_verbs = ["orchestrated", "chaired", "programmed", "operated", "spear-head
                 "consulted", "arbitrated", "mediated", "informed", "resolved", "interfaced", "updated", 
                 "motivated", "explained", "guided", "facilitated", "clarified", "enabled", "capitalized", 
                 "expedited", "stimulated", "maximized", "solved", "strengthened", "settled", "reconciled", 
-                "elevated, negotiated, standardized, influenced, arbitrated, boosted, clarified, 
-                "integrated", "modified", "overhauled", "redesigned", "restructured", "transformed",
+                "elevated", "negotiated", "standardized", "influenced", "implemented", "arbitrated", "boosted",
+                "clarified", "integrated", "modified", "overhauled", "redesigned", "restructured", "transformed",
                 "debugged", "regulated", "restored", "fabricated", "remodeled", "composed", "corresponded", 
                 "illustrated", "persuaded", "lobbied", "defined", "formulated", "synthesized", "conveyed", 
                 "disbursed", "publicized", "discussed", "informed", "eased", "adapted", "enhanced", "unified"]

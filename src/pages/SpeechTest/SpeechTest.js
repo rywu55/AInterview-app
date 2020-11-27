@@ -28,6 +28,8 @@ class Speech extends Component {
             currentQuestion: '',
             userFeedback: [],
             finishedInterview: false,
+            data: null,
+            positions: null,
         }
         this.toggleListen = this.toggleListen.bind(this)
         this.generateQuestion = this.generateQuestion.bind(this)
@@ -146,6 +148,49 @@ class Speech extends Component {
         //console.log(this.state.finishedInterview)
     }
 
+    onUploadHandler(event) {
+        const file = event.target.files[0];
+    
+        // Simple POST request with a JSON body using fetch
+        const formData = new FormData();
+        formData.append('file', file);
+        const requestOptions = {
+          method: 'POST',
+          body: formData,
+        };
+        fetch('https://parser.itsjafer.com/parse', requestOptions)
+          .then((response) => response.json())
+          .then((resume) => {
+            this.setState({ resume });
+            const degrees = resume.schools ? resume.schools.map((school) => `Degree: ${school.degree ?? '??'}. Major: ${school.field ?? '??'}.`) : [];
+            const schools = resume.schools ? resume.schools.map((school) => `${school.org ?? '??'} from ${school.start ? school.start.month : '??'}/${school.start ? school.start.year : '??'} to ${school.end ? school.end.month : '??'}/${school.end ? school.end.year : '??'}.`) : [];
+            const links = resume.links ? resume.links.map((link) => link.url ?? '??').join(', ') : [];
+            const data = [
+              { info: 'Name', parsed: resume.names ? resume.names.join(', ') : [] },
+              { info: 'Email', parsed: resume.emails ? resume.emails[0].value : [] },
+              { info: 'Phone', parsed: resume.phones ? resume.phones[0].value : [] },
+              { info: 'University', parsed: schools.join(', ') },
+              { info: 'Degree', parsed: degrees.join(', ') },
+              { info: 'Links', parsed: links },
+              { info: 'Summary', parsed: resume.summary && resume.summary.experience ? resume.summary.experience : '??' },
+              { info: 'Skills', parsed: resume.summary && resume.summary.skills ? resume.summary.skills : '??' },
+            ];
+            const positions = resume.positions ? resume.positions.map((position) => ({
+              company: position.org ?? '??', position: position.title ?? '??', date: `${position.start ? position.start.month : '??'}/${position.start ? position.start.year : '??'} - ${position.end ? position.end.month : '??'}/${position.end ? position.end.year : '??'}`, summary: position.summary ?? '??',
+            })) : [];
+            const limitedPositions = resume.positions ? resume.positions.map((position) => ({
+              company: `${position.org} -- 
+                ${position.title} (${position.start ? position.start.month : '??'}/${position.start ? position.start.year : '??'} - ${position.end ? position.end.month : '??'}/${position.end ? position.end.year : '??'}` ?? '??',
+              summary: position.summary ?? '??',
+            })) : [];
+    
+            this.setState({ data, positions, limitedPositions });
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      
     render() {
         return (
             <div className='content'>
@@ -163,10 +208,13 @@ class Speech extends Component {
                                 <p>5. When you are finished, click 'Analyze Scores' to view feedback</p>
                             </div>
                         <h1 className='titleHeader'>Insert Resume</h1>
-                        <form action="/parse" className='resumeForm' method="post" encType="multipart/form-data">
-                            <input type="file" name="file"></input>
-                            <input type="submit" name="update" value="Submit Resume" />
+                        <form method="post" action="#" id="#">
+                            <div className="form-group files">
+                            <label for="file">Upload resume (docx or pdf):</label>
+                            <input type="file" name="file" className="form-control" onChange={(event) => this.onUploadHandler(event)} />
+                            </div>
                         </form>
+                        
                         
                     </div>
                     <div className='interviewContainer'>
@@ -194,6 +242,7 @@ class Speech extends Component {
                 </div>}
             </div>
         )
+        
     }
 
 }

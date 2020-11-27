@@ -3,6 +3,7 @@ import flair
 import requests
 import re
 import csv
+import bleu
 from flair.models import SequenceTagger
 # pip install flair
 # https://github.com/neural-dialogue-metrics/BLEU
@@ -27,8 +28,13 @@ action_verbs = ["orchestrated", "chaired", "programmed", "operated", "spear-head
                 "disbursed", "publicized", "discussed", "informed", "eased", "adapted", "enhanced", "unified"]
 
 
-@app.route('/api/v1/speechAnalysis/', methods=["GET", "POST"])
-def speech_analysis_demo():
+@speechTest.route('/api/v1', methods=["GET"])
+def show_index():
+    return "HELLO WORLD"
+
+
+@SpeechTest.route('/api/v1/speechAnalysis/', methods=["GET", "POST"])
+def speech_analysis():
     """Get metrics and analysis of user transcript"""
     # ---------------------------------------------
     # Clean transcript text and set hyperparameters

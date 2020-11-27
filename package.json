@@ -12,7 +12,9 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
     "react-speech-recognition": "^3.2.3",
-    "speech-recognition": "^0.0.1"
+    "resume-parser": "^1.1.0",
+    "speech-recognition": "^0.0.1",
+    "textract": "^2.5.0"
   },
   "scripts": {
     "start": "react-scripts start",
