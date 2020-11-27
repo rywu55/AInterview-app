@@ -4,6 +4,7 @@ import requests
 import re
 import csv
 import bleu
+import SpeechTest
 from flair.models import SequenceTagger
 # pip install flair
 # https://github.com/neural-dialogue-metrics/BLEU
@@ -21,19 +22,19 @@ action_verbs = ["orchestrated", "chaired", "programmed", "operated", "spear-head
                 "consulted", "arbitrated", "mediated", "informed", "resolved", "interfaced", "updated", 
                 "motivated", "explained", "guided", "facilitated", "clarified", "enabled", "capitalized", 
                 "expedited", "stimulated", "maximized", "solved", "strengthened", "settled", "reconciled", 
-                "elevated, negotiated, standardized, influenced, arbitrated, boosted, clarified, 
+                "elevated", "negotiated", "standardized", "implemented", "influenced", "arbitrated", "boosted", "clarified", 
                 "integrated", "modified", "overhauled", "redesigned", "restructured", "transformed",
                 "debugged", "regulated", "restored", "fabricated", "remodeled", "composed", "corresponded", 
                 "illustrated", "persuaded", "lobbied", "defined", "formulated", "synthesized", "conveyed", 
                 "disbursed", "publicized", "discussed", "informed", "eased", "adapted", "enhanced", "unified"]
 
 
-@speechTest.route('/api/v1', methods=["GET"])
+@SpeechTest.app.route('/api/v1', methods=["GET"])
 def show_index():
     return "HELLO WORLD"
 
 
-@SpeechTest.route('/api/v1/speechAnalysis/', methods=["GET", "POST"])
+@SpeechTest.app.route('/api/v1/speechAnalysis/', methods=["GET", "POST"])
 def speech_analysis():
     """Get metrics and analysis of user transcript"""
     # ---------------------------------------------
@@ -42,7 +43,7 @@ def speech_analysis():
     data = flask.request.json
     transcript = data['transcript']
     resume_summaries = data['resume']["positions"]
-    transcript = line.strip()
+    transcript = transcript.strip()
     transcript = re.sub(r'[^a-zA-Z0-9]+', '', transcript)
 
     utterance_length = len(transcript.split())
@@ -154,9 +155,8 @@ def speech_analysis():
             filler_used.append(word)
             filler_occ.append(word_count[word])
 
-    speaking_score = (lambda_s*sentiment_score) - (lambda_f*word_violation)
-     + (lambda_v*verb_counter) + (lambda_r*relevance_score)
-    contect["speaking_score": speaking_score]
+    speaking_score = (lambda_s*sentiment_score) - (lambda_f*word_violation) + (lambda_v*verb_counter) + (lambda_r*relevance_score)
+    context["speaking_score": speaking_score]
 
     # ------------------
     # Format return JSON

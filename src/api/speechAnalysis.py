@@ -28,7 +28,7 @@ action_verbs = ["orchestrated", "chaired", "programmed", "operated", "spear-head
                 "disbursed", "publicized", "discussed", "informed", "eased", "adapted", "enhanced", "unified"]
 
 
-@app.route('/api/v1/speechAnalysis/', methods=["GET", "POST"])
+@SpeechTest.route('/api/v1/speechAnalysis/', methods=["GET", "POST"])
 def speech_analysis_demo():
     """Get metrics and analysis of user transcript"""
     # ---------------------------------------------
@@ -149,9 +149,8 @@ def speech_analysis_demo():
             filler_used.append(word)
             filler_occ.append(word_count[word])
 
-    speaking_score = (lambda_s*sentiment_score) - (lambda_f*word_violation)
-     + (lambda_v*verb_counter) + (lambda_r*relevance_score)
-    contect["speaking_score": speaking_score]
+    speaking_score = (lambda_s*sentiment_score) - (lambda_f*word_violation) + (lambda_v*verb_counter) + (lambda_r*relevance_score)
+    context["speaking_score": speaking_score]
 
     # ------------------
     # Format return JSON

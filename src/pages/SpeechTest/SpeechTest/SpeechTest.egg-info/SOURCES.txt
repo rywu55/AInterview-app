@@ -1,0 +1,6 @@
+setup.py
+SpeechTest.egg-info/PKG-INFO
+SpeechTest.egg-info/SOURCES.txt
+SpeechTest.egg-info/dependency_links.txt
+SpeechTest.egg-info/requires.txt
+SpeechTest.egg-info/top_level.txt
