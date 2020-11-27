@@ -13,6 +13,7 @@ setup(
         'pylint',
         'pytest',
         'requests',
+        'flair',
     ],
     python_requires='>=3.6',
 )

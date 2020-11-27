@@ -40,7 +40,7 @@ def speech_analysis():
     # ---------------------------------------------
     # Clean transcript text and set hyperparameters
     # ---------------------------------------------
-    data = flask.request.json
+    data = flask.request.get_json()['data']
     transcript = data['transcript']
     resume_summaries = data['resume']["positions"]
     transcript = transcript.strip()
@@ -66,19 +66,20 @@ def speech_analysis():
     # ------------------------------------------------------------
     # Get positivity/negativity of each sentence and company names
     # ------------------------------------------------------------
-    sentiment_score = None
+    sentiment_score = 0
     companies = []
     flair_sentiment = flair.models.TextClassifier.load('en-sentiment')
     processed = flair.data.Sentence(transcript)  
     flair_sentiment.predict(processed)
     value = processed.labels[0].to_dict()['value'] 
     if value == 'POSITIVE':
-        sentiment_score = text.to_dict()['labels'][0]['confidence']
+        sentiment_score = processed.to_dict()['labels'][0]['confidence']
     else:
-        sentiment_score = -(text.to_dict()['labels'][0]['confidence'])
+        sentiment_score = -(processed.to_dict()['labels'][0]['confidence'])
     tagger = SequenceTagger.load('ner')
+    processed = flair.data.Sentence(transcript)  
     tagger.predict(processed)
-    entities = tagger.to_dict(tag_type='ner')
+    entities = processed.to_dict(tag_type='ner')
     for entity in entities["entities"]:
         companies.append(entity["text"])
     print("Sentiment Analysis:", sentiment_score)
@@ -87,7 +88,7 @@ def speech_analysis():
     # --------------------------------------------------------
     # Use ranking algorithm to determine most relevant company
     # --------------------------------------------------------
-    most_important = None
+    most_important = ""
     response = requests.get("https://www.parsehub.com/api/v2/projects/tRrJEnpDr-0S/last_ready_run/data?api_key=tkUoC2yLZ6pT&format=json")
     info = response.json()['internships']
     remove_idx = []
@@ -106,14 +107,14 @@ def speech_analysis():
     info = list(temp.items())
 
     ranks = []
-    if companies.empty():
+    if len(companies) == 0:
         most_important = ""
     else:
         for i in range(len(companies)):
             for j in range(len(info)):
                 if companies[i] in info[j][0]:
                     ranks.append([companies[i], j])
-        if ranks.empty():
+        if len(ranks) == 0:
             most_important = companies[0]
         else:
             ranks.sort(key = lambda x : x[1])
@@ -151,11 +152,11 @@ def speech_analysis():
     filler_occ = []
     for word in filler_words:
         if word_count[word] > wc_threshold:    
-            word_violation += 1
+            word_violations += 1
             filler_used.append(word)
             filler_occ.append(word_count[word])
 
-    speaking_score = (lambda_s*sentiment_score) - (lambda_f*word_violation) + (lambda_v*verb_counter) + (lambda_r*relevance_score)
+    speaking_score = (lambda_s*sentiment_score) - (lambda_f*word_violations) + (lambda_v*verb_counter) + (lambda_r*relevance_score)
     context["speaking_score": speaking_score]
 
     # ------------------
@@ -166,7 +167,7 @@ def speech_analysis():
     breakdown.append({"category": "Action Verbs", "value": verb_counter})
     breakdown.append({"category": "Resume Relevance", "value": relevance_score})
     context["breakdown"] = breakdown
-
+    print(context)
     return flask.jsonify(**context)
 
 

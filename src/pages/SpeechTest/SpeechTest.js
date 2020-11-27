@@ -24,7 +24,8 @@ class Speech extends Component {
             allResponses: [],
             recommendations: [],
             toggleQuestion: false,
-            questionList: ["Tell me about yourself", "How has Ford helped you with your future career?", "What are your strengths?", "What are your weaknesses?", "Tell me about a time you've worked with a team"],
+            questionList: ["Tell me about yourself.", "What are your strengths?", "What are your weaknesses?", "Tell me about a time you've worked with a team.",
+                           "Tell me about a leadership experience you're proud of.", "Tell me about how your past coworkers would describe you."],
             currentQuestion: '',
             userFeedback: [],
             finishedInterview: false,
@@ -37,7 +38,46 @@ class Speech extends Component {
         this.provideFeedback = this.provideFeedback.bind(this)
     }
 
+    /*
+
+    const positionList = this.state.data["positions"]
+    console.log(positionList)
+    const school = this.state.data["schools"]
+    console.log(school)
+    var arrayLength = positionList.length;
+    var tempQuestions = []
+    for (var i = 0; i < positionList; i++) {
+        const questionTemp = "How has your experience at " + positionList[i]["org"] + " helped you develop as a person?"
+        const questionTemp2 = "What is your proudest project at " + postitionList[i]["org"] + "?"
+        tempQuestions.push({questionTemp})
+        tempQuestions.push({questionTemp2})
+        
+    }
+
+    */
     generateQuestion() {
+        /*
+        const positionList = this.state.data["positions"]
+        console.log(positionList)
+        const school = this.state.data["schools"]
+        console.log(school)
+        const arrayLength = positionList.length;
+        const tempQuestions = []
+        console.log(arrayLength)
+        for (var i = 0; i < arrayLength; i++) {
+            const questionTemp = "How has your experience at " + positionList[i]["org"] + " helped you develop as a person?"
+            const questionTemp2 = "What is your proudest project at " + positionList[i]["org"] + "?"
+            const questionTemp3 = "What have you learned from " + positionList[i]["org"] + "?"
+            const questionTemp4 = "Why have you left your position at " + positionList[i]["org"] + "?"
+            const questionTemp5 = "Tell me more aboout your experience at " + positionList[i]["org"] + "?"
+            tempQuestions.push({questionTemp})
+            tempQuestions.push({questionTemp2})
+            tempQuestions.push({questionTemp3})
+            tempQuestions.push({questionTemp4})
+            tempQuestions.push({questionTemp5})
+        } 
+        const questionTemp6 = "How has your experiences at "
+        console.log(tempQuestions) */
         const min = 0;
         const max = this.state.questionList.length;
         const rand = Math.round(Math.random() * ((max - 1) - min));
@@ -123,17 +163,23 @@ class Speech extends Component {
                 allResponses: allResponsesTemp
             })
             // MAKE GET REQUEST TO NATHAN
-            let userAnswer = {'transcript': this.state.userResponse}
-            fetch('/api/v1/speechAnalysis/', {method: 'POST', body: {userAnswer}})
+            console.log("userAnswer")
+            let userAnswer = {'transcript': this.state.userResponse, 'resume': this.state.data}
+            console.log(userAnswer)
+            //{ method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ postid_url_slug: postid, text: inputText }) }
+            fetch('/api/v1/speechAnalysis/', {method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({data: userAnswer})})
                  .then((response) => {
+                     console.log("Response")
                      console.log(response)
-            //         if(!response.ok) throw Error(response.statusText);
-            //         this.setState({
-            //             userFeedback: this.state.userFeedback.push({
-            //                 key: this.state.currentQuestion,
-            //                 value: response,
-            //             })
-            //         })
+                    //if(!response.ok) throw Error(response.statusText);
+                    let userFeedbackTemp = this.state.userFeedback;
+                    userFeedbackTemp.push({
+                        key: this.state.currentQuestion,
+                        value: response,
+                    })
+                    this.setState({
+                        userFeedback: this.state.userFeedbackTemp
+                    })
                  })
         }
     }
@@ -158,10 +204,15 @@ class Speech extends Component {
           method: 'POST',
           body: formData,
         };
-        fetch('https://parser.itsjafer.com/parse', requestOptions)
-          .then((response) => response.json())
+        console.log("Fetching")
+        fetch('/parse', requestOptions)
+          .then((response) => {
+              //console.log(response.json())
+              return response.json()})
           .then((resume) => {
-            this.setState({ resume });
+              //console.log(resume)
+            /*
+            this.setState({ resume }#
             const degrees = resume.schools ? resume.schools.map((school) => `Degree: ${school.degree ?? '??'}. Major: ${school.field ?? '??'}.`) : [];
             const schools = resume.schools ? resume.schools.map((school) => `${school.org ?? '??'} from ${school.start ? school.start.month : '??'}/${school.start ? school.start.year : '??'} to ${school.end ? school.end.month : '??'}/${school.end ? school.end.year : '??'}.`) : [];
             const links = resume.links ? resume.links.map((link) => link.url ?? '??').join(', ') : [];
@@ -185,6 +236,15 @@ class Speech extends Component {
             })) : [];
     
             this.setState({ data, positions, limitedPositions });
+            console.log("data")
+            console.log(this.state.data)
+            console.log("positions")
+            console.log(this.state.positions)
+            console.log("limited poisitons")
+            console.log(this.state.limitedPositions)
+            */
+           this.setState({data: resume})
+           
           })
           .catch((error) => {
             console.log(error);
