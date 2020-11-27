@@ -48,11 +48,13 @@
 }
 
 .toggleButton {
-    width: 60px;
-    height: 60px;
-    background: #263653;
+    width: 100px;
+    height: 100px;
+    background: #ad0e29;
     border-radius: 50%;
-    margin: 6em 0 2em 0;
+    color: white;
+    margin: 3em 0 2em 0;
+                        
 }
 
 .interim {
@@ -72,14 +74,39 @@
 }
 
 .finishButton {
-    width: 60px;
-    height: 60px;
+    width: 100px;
+    height: 100px;
     background: #F4A261;
     border-radius: 50%;
+    color: white;
     margin: 6em 0 2em 0;
 }
 
 .small-component {
     color: white;
     font-weight: bold;
+}
+
+.instructions {
+    color: white;
+}
+
+.feedback {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    background-color: mediumspringgreen;
+}
+
+.feedbackHeaders {
+    display: flex;
+    flex-direction: row;
+
+}
+
+.feedbackContent {
+    display: flex;
+    flex-direction: column;
 }
