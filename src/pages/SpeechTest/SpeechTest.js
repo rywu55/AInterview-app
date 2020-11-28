@@ -24,12 +24,15 @@ class Speech extends Component {
             allResponses: [],
             recommendations: [],
             toggleQuestion: false,
-            questionList: ["Tell me about yourself.", "What are your strengths?", "What are your weaknesses?", "Tell me about a time you've worked with a team.",
-                           "Tell me about a leadership experience you're proud of.", "Tell me about how your past coworkers would describe you."],
+            questionList: ["Tell me about yourself.", "What are your strengths?", "What are your weaknesses?", "Tell me about a time you've worked with a team.", "Tell me about a time you had to be very strategic in order to meet all your top priorities",
+                           "Tell me about a leadership experience you're proud of.", "Tell me about how your past coworkers would describe you.", "Tell me about a time you were under a lot of pressure. What was going on, and how did you get through it?"],
             currentQuestion: '',
             // userFeedback: [],
             finishedInterview: false,
             data: null,
+            positions: null,
+            doneParsing: false,
+            resumeData: null,
             positions: null,
         }
         this.toggleListen = this.toggleListen.bind(this)
@@ -56,28 +59,6 @@ class Speech extends Component {
 
     */
     generateQuestion() {
-        /*
-        const positionList = this.state.data["positions"]
-        console.log(positionList)
-        const school = this.state.data["schools"]
-        console.log(school)
-        const arrayLength = positionList.length;
-        const tempQuestions = []
-        console.log(arrayLength)
-        for (var i = 0; i < arrayLength; i++) {
-            const questionTemp = "How has your experience at " + positionList[i]["org"] + " helped you develop as a person?"
-            const questionTemp2 = "What is your proudest project at " + positionList[i]["org"] + "?"
-            const questionTemp3 = "What have you learned from " + positionList[i]["org"] + "?"
-            const questionTemp4 = "Why have you left your position at " + positionList[i]["org"] + "?"
-            const questionTemp5 = "Tell me more aboout your experience at " + positionList[i]["org"] + "?"
-            tempQuestions.push({questionTemp})
-            tempQuestions.push({questionTemp2})
-            tempQuestions.push({questionTemp3})
-            tempQuestions.push({questionTemp4})
-            tempQuestions.push({questionTemp5})
-        } 
-        const questionTemp6 = "How has your experiences at "
-        console.log(tempQuestions) */
         const min = 0;
         const max = this.state.questionList.length;
         const rand = Math.round(Math.random() * ((max - 1) - min));
@@ -221,9 +202,7 @@ class Speech extends Component {
               //console.log(response.json())
               return response.json()})
           .then((resume) => {
-              //console.log(resume)
-            /*
-            this.setState({ resume }#
+            this.setState({ resume })
             const degrees = resume.schools ? resume.schools.map((school) => `Degree: ${school.degree ?? '??'}. Major: ${school.field ?? '??'}.`) : [];
             const schools = resume.schools ? resume.schools.map((school) => `${school.org ?? '??'} from ${school.start ? school.start.month : '??'}/${school.start ? school.start.year : '??'} to ${school.end ? school.end.month : '??'}/${school.end ? school.end.year : '??'}.`) : [];
             const links = resume.links ? resume.links.map((link) => link.url ?? '??').join(', ') : [];
@@ -246,15 +225,39 @@ class Speech extends Component {
               summary: position.summary ?? '??',
             })) : [];
     
-            this.setState({ data, positions, limitedPositions });
-            console.log("data")
-            console.log(this.state.data)
-            console.log("positions")
-            console.log(this.state.positions)
-            console.log("limited poisitons")
-            console.log(this.state.limitedPositions)
-            */
+            this.setState({ resumeData: data, positions: positions});
+            //console.log("data")
+            //console.log(this.state.data)
+           // console.log("positions")
+            //console.log(this.state.positions)
+            
            this.setState({data: resume})
+           const positionList = this.state.data["positions"]
+          // console.log(positionList)
+           const school = this.state.data["schools"]
+          // console.log(school)
+           const arrayLength = positionList.length;
+           const tempQuestions = []
+           //console.log(arrayLength)
+           for (var i = 0; i < arrayLength; i++) {
+               const questionTemp = "How has your experience at " + positionList[i]["org"] + " helped you develop as a person?"
+               const questionTemp2 = "What is your proudest project at " + positionList[i]["org"] + "?"
+               const questionTemp3 = "What have you learned from " + positionList[i]["org"] + "?"
+               const questionTemp4 = "Why have you left your position at " + positionList[i]["org"] + "?"
+               const questionTemp5 = "Tell me more aboout your experience at " + positionList[i]["org"] + "?"
+               const questionTemp6 = "Give me an example of a time you faced a conflict while working on a team at " + positionList[i]["org"] + ". How did you handle that?"
+               tempQuestions.push(questionTemp)
+               tempQuestions.push(questionTemp2)
+               tempQuestions.push(questionTemp3)
+               tempQuestions.push(questionTemp4)
+               tempQuestions.push(questionTemp5)
+               tempQuestions.push(questionTemp6)
+           } 
+           //console.log(tempQuestions) 
+           let questionList1 = this.state.questionList
+           questionList1 = questionList1.concat(tempQuestions)
+           this.setState({questionList: questionList1, doneParsing: true})
+           console.log(this.state.questionList)
            
           })
           .catch((error) => {
@@ -286,7 +289,8 @@ class Speech extends Component {
                             </div>
                         </form>
                         
-                        
+                        <h1 className='titleHeader'>Resume Info</h1>
+                        <p>{this.state.doneParsing && this.state.resumeData.map((information) => <p className='instructions'> {information.info} : {information.parsed} </p>)}</p>
                     </div>
                     <div className='interviewContainer'>
                         <h1 className='titleHeader'>Start Interviewing</h1>
