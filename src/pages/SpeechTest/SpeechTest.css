@@ -97,16 +97,43 @@
     align-items: center;
     text-align: center;
     width: 100%;
-    background-color: mediumspringgreen;
+    background-color: #263653;
 }
 
 .feedbackHeaders {
     display: flex;
     flex-direction: row;
-
+    justify-content: space-around;
+    color: white;
+    width: 100%;
 }
 
 .feedbackContent {
     display: flex;
     flex-direction: column;
+    align-items: space-around;
+    width: 100%;
+}
+
+.questionContent {
+    display: flex;
+    flex-direction: row;
+    color: white;
+    width: 100%;
+    border-radius: 2px;
+    border-color: white;
+}
+
+.questionTranscript {
+    display: flex;
+    flex-direction: column;
+    color: white;
+    width: 50%;
+}
+
+.questionFeedback {
+    display: flex;
+    flex-direction: column;
+    color: white;
+    width: 50%;
 }

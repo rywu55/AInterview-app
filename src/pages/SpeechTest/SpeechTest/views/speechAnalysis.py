@@ -3,19 +3,25 @@ import flair
 import requests
 import re
 import csv
-import bleu
+import os
+import nltk
+import gensim
+import numpy as np
+
+from nltk.tokenize import word_tokenize, sent_tokenize
+# import bleu
 import SpeechTest
 from flair.models import SequenceTagger
 # pip install flair
 # https://github.com/neural-dialogue-metrics/BLEU
 
 # app = Flask(__name__)
-filler_words = [" well ", " um ", " er ", " uh ", " hmm ", " like ",
-                " actually ", " basically ", " seriously ", " you see ",
-                " you know ", " I mean ",
-                " you know what I mean ",
-                " at the end of the day ", " believe me ", " I guess ", " I suppose ",
-                " or something ", " right ", " mhm ", " uh huh "]
+filler_words = ["well", " um ", " er ", " uh ", "hmm ", "like",
+                "actually", "basically", "seriously", "you see",
+                "you know", "I mean",
+                "you know what I mean",
+                "at the end of the day", "believe me", "I guess", "I suppose",
+                "or something", "right", "mhm", "uh huh"]
 
 action_verbs = ["orchestrated", "chaired", "programmed", "operated", "spear-headed", "collaborated", 
                 "commissioned", "advised", "headed", "delegated", "established", "advocated", "fielded", 
@@ -42,15 +48,18 @@ def speech_analysis():
     # ---------------------------------------------
     data = flask.request.get_json()['data']
     transcript = data['transcript']
+    print(transcript)
     resume_summaries = data['resume']["positions"]
-    transcript = transcript.strip()
-    transcript = re.sub(r'[^a-zA-Z0-9]+', '', transcript)
+    # transcript = transcript.strip()
+    # transcript = re.sub(r'[^a-zA-Z0-9]+', '', transcript)
+    # transcript_string = transcript
+    # transcript = transcript.split()
 
     utterance_length = len(transcript.split())
-    wc_threshold = max(0.05*utterance_length, 3)
+    wc_threshold = min(0.05*utterance_length, 2)
     lambda_f = 1
     lambda_s = 2
-    lambda_r = 1
+    lambda_r = 3
     lambda_v = 1
 
     # -----------------------
@@ -59,6 +68,7 @@ def speech_analysis():
     word_count = {}
     for word in filler_words:
         word_count[word] = transcript.count(word)
+        print(word, ": ", word_count[word])
     for word in filler_words:
         if word_count[word] != 0:
             print("The phrase:", word, "was said", word_count[word], "times")
@@ -127,21 +137,42 @@ def speech_analysis():
     verb_counter = 0
     for word in action_verbs:
         verb_count[word] = transcript.count(word)
+        print(word, ": ", verb_count[word])
     for word in action_verbs:
         if verb_count[word] != 0:
             verb_counter += verb_count[word]
 
     # -----------------------------
-    # Get relevance to resume score
+    # Get relevance to dataset score
     # -----------------------------
-    cleaned_list = []
-    for summary in resume_summaries:
-        cleaned = re.sub(r'[^a-zA-Z0-9]+', '', summary["summary"])
-        cleaned = cleaned.lower()
-        cleaned = re.sub(r"[\n\t\s]*", "", cleaned)
-        cleaned_list.append(cleaned)
-    relevance_score = bleu.bleu_corpus_level(translation_corpus=transcript, reference_corpus=cleaned_list)
-    print(relevance_score)
+    nltk.download('punkt')
+    gen_docs = []
+    num_docs = 0
+    filename = os.path.abspath(os.path.dirname(__file__)) + '/demofile.txt'
+    with open(filename) as f:
+        lines = f.readlines()
+        for line in lines:
+            line = line.replace(".", " ")
+            line = [w.lower() for w in word_tokenize(line)]
+            gen_docs.append(line)
+            num_docs += 1
+
+    dictionary = gensim.corpora.Dictionary(gen_docs)
+    corpus = [dictionary.doc2bow(gen_doc) for gen_doc in gen_docs]
+
+    tf_idf = gensim.models.TfidfModel(corpus)
+
+    tmp = os.path.abspath(os.path.dirname(__file__)) + '/tmp/'
+    sims = gensim.similarities.Similarity(tmp,tf_idf[corpus],
+                                        num_features=len(dictionary))
+
+    query_doc = [w.lower() for w in word_tokenize(transcript)]
+    query_doc_bow = dictionary.doc2bow(query_doc)
+
+    query_doc_tf_idf = tf_idf[query_doc_bow]
+
+    sum_of_sims =(np.sum(sims[query_doc_tf_idf], dtype=np.float32))
+    relevance_score = (sum_of_sims / num_docs)
 
     # --------------------------------------
     # Calculate user scoring for each metric
@@ -153,19 +184,18 @@ def speech_analysis():
     for word in filler_words:
         if word_count[word] > wc_threshold:    
             word_violations += 1
-            filler_used.append(word)
-            filler_occ.append(word_count[word])
+            filler_used.append(word + " usage amount: " + str(word_count[word]))
 
     speaking_score = (lambda_s*sentiment_score) - (lambda_f*word_violations) + (lambda_v*verb_counter) + (lambda_r*relevance_score)
-    context["speaking_score": speaking_score]
+    context["speaking_score"] = speaking_score
 
     # ------------------
     # Format return JSON
     # ------------------
-    breakdown = [{"category": "Filler Words", "words": filler_used, "number_occ": filler_occ}]
+    breakdown = [{"category": "Filler Words", "words": filler_used}]
     breakdown.append({"category": "Sentiment", "value": sentiment_score})
     breakdown.append({"category": "Action Verbs", "value": verb_counter})
-    breakdown.append({"category": "Resume Relevance", "value": relevance_score})
+    breakdown.append({"category": "Response Relevance", "value": relevance_score})
     context["breakdown"] = breakdown
     print(context)
     return flask.jsonify(**context)
@@ -177,7 +207,7 @@ def speech_analysis():
 #     company: string
 #     speaking_score: float
 #     breakdown: [
-#                   { category: "Filler words", words: [string list]. number_occ: [int list]}, 
+#                   { category: "Filler words", words: [string list] }, 
 #                   { category: "Sentiment", value: float},
 #                   { category: "Action Verbs", value: int}],
 #                   { category: "Resume Relevance", value: float}

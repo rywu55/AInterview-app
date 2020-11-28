@@ -27,7 +27,7 @@ class Speech extends Component {
             questionList: ["Tell me about yourself.", "What are your strengths?", "What are your weaknesses?", "Tell me about a time you've worked with a team.",
                            "Tell me about a leadership experience you're proud of.", "Tell me about how your past coworkers would describe you."],
             currentQuestion: '',
-            userFeedback: [],
+            // userFeedback: [],
             finishedInterview: false,
             data: null,
             positions: null,
@@ -153,34 +153,45 @@ class Speech extends Component {
         }
 
         if(!this.state.listening){
-            console.log("Adding to the reponses!")
-            let allResponsesTemp = this.state.allResponses
-            allResponsesTemp.push({
-                key: this.state.currentQuestion,
-                value: this.state.userResponse
-            })
-            this.setState({
-                allResponses: allResponsesTemp
-            })
             // MAKE GET REQUEST TO NATHAN
             console.log("userAnswer")
             let userAnswer = {'transcript': this.state.userResponse, 'resume': this.state.data}
             console.log(userAnswer)
+
+            let tempDict = {
+                key: this.state.currentQuestion,
+                value: this.state.userResponse, 
+            }
             //{ method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ postid_url_slug: postid, text: inputText }) }
             fetch('/api/v1/speechAnalysis/', {method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({data: userAnswer})})
-                 .then((response) => {
-                     console.log("Response")
-                     console.log(response)
+            .then((response) => {
+                return response.json()
+            })    
+            .then((data) => {
+                    console.log("Response")
+                    console.log(data)
                     //if(!response.ok) throw Error(response.statusText);
-                    let userFeedbackTemp = this.state.userFeedback;
-                    userFeedbackTemp.push({
-                        key: this.state.currentQuestion,
-                        value: response,
-                    })
+                    // let userFeedbackTemp = this.state.userFeedback;
+                    // userFeedbackTemp.push({
+                    //     key: this.state.currentQuestion,
+                    //     value: response,
+                    // })
+                    if(data){
+                        tempDict['feedback'] = data
+                        console.log(tempDict['feedback'])
+                    } else{
+                        tempDict['feedback'] = ''
+                        console.log(tempDict['feedback'])
+                    }
+
+                    console.log("Adding to the reponses!")
+                    let allResponsesTemp = this.state.allResponses
+                    allResponsesTemp.push(tempDict)
                     this.setState({
-                        userFeedback: this.state.userFeedbackTemp
+                        allResponses: allResponsesTemp
                     })
-                 })
+                    console.log(this.state.allResponses)
+                })
         }
     }
 
@@ -292,11 +303,28 @@ class Speech extends Component {
                 </div>
                 {this.state.finishedInterview && <div className='feedback'>
                     <div className='feedbackHeaders'>
-                        <h1 className='feedbackHeader'>Transcript</h1>
-                        <h1 className='feedbackHeader'>Feedback</h1>
+                        <div><h1 className='feedbackHeader'>Transcript</h1></div>
+                        <div><h1 className='feedbackHeader'>Feedback</h1></div>
                     </div>
                     <div className='feedbackContent'>
-                        { this.state.allResponses.map((response) => <div>Question: {response.key} Answer:{response.value}</div>) }
+                        { this.state.allResponses.map((response) => 
+                        <div className="questionContent">
+                            <div className="questionTranscript">
+                                <p>Question: {response.key} </p>
+                                <p>Answer:{response.value}</p>
+                            </div>
+                            <div className="questionFeedback">
+                                <p>Company: {response.feedback.company}</p>
+                                <p>{response.feedback.breakdown[0].category}: </p>
+                                {response.feedback.breakdown[0].words.map((word) => 
+                                    <p>{word}</p>
+                                )}
+                                <p>{response.feedback.breakdown[1].category}: {response.feedback.breakdown[1].value}</p>
+                                <p>{response.feedback.breakdown[2].category}: {response.feedback.breakdown[2].value}</p>
+                                <p>{response.feedback.breakdown[3].category}: {response.feedback.breakdown[3].value}</p>
+                                <p>Speaking Score: {response.feedback.speaking_score}</p>
+                            </div>
+                        </div>) }
                     </div>
 
                 </div>}
