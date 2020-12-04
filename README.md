@@ -14,7 +14,7 @@ Our team has created a mock interview tool that takes a user's resume to generat
 
 **Resume Parsing:**  
 parser.py  
-SpeechTest.js (onUploadHandler)
+SpeechTest.js (onUploadHandler)  
 https://github.com/rywu55/AInterview-app/blob/dev/src/pages/SpeechTest/SpeechTest.js#L189  
 https://github.com/rywu55/AInterview-app/blob/dev/src/pages/SpeechTest/SpeechTest/views/parser.py  
 
