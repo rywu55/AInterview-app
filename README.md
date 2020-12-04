@@ -11,14 +11,14 @@ Our team has created a mock interview tool that takes a user's resume to generat
 **NOTE** The finished working copy is on the dev branch. All files are found in src/pages/SpeechTest
 
 Resume Parsing:
-AInterview-app/src/pages/SpeechTest/SpeechTest/views/parser.py
-Link: https://github.com/rywu55/AInterview-app/blob/dev/src/pages/SpeechTest/SpeechTest/views/parser.py
+AInterview-app/src/pages/SpeechTest/SpeechTest/views/parser.py  
+Link: https://github.com/rywu55/AInterview-app/blob/dev/src/pages/SpeechTest/SpeechTest/views/parser.py  
 
-Speech Analysis:
-AInterview-app/src/pages/SpeechTest/SpeechTest/views/SpeechAnalysis.py
-Link: https://github.com/rywu55/AInterview-app/blob/dev/src/pages/SpeechTest/SpeechTest/views/speechAnalysis.py
+Speech Analysis:  
+AInterview-app/src/pages/SpeechTest/SpeechTest/views/SpeechAnalysis.py  
+Link: https://github.com/rywu55/AInterview-app/blob/dev/src/pages/SpeechTest/SpeechTest/views/speechAnalysis.py  
 
-UI/UX Design:
-SpeechTest.css
-SpeechTest.js
-https://github.com/rywu55/AInterview-app/tree/dev/src/pages/SpeechTest
+UI/UX Design:  
+SpeechTest.css  
+SpeechTest.js  
+https://github.com/rywu55/AInterview-app/tree/dev/src/pages/SpeechTest  
