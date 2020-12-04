@@ -10,7 +10,7 @@ Our team has created a mock interview tool that takes a user's resume to generat
 
 **NOTE** The finished working copy is on the dev branch. All files are found in src/pages/SpeechTest
 
-Resume Parsing:
+Resume Parsing:  
 AInterview-app/src/pages/SpeechTest/SpeechTest/views/parser.py  
 Link: https://github.com/rywu55/AInterview-app/blob/dev/src/pages/SpeechTest/SpeechTest/views/parser.py  
 
