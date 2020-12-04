@@ -1,32 +1,16 @@
-# AInterview-app
+AInterview
+Happy Hooves 2.0
+Team Members: Ryan Wu, Nicholas Huang, Anoop Kotha, Van Nguyen, Mathew Dipuccio, Nathan Tseng
 
-***To run the app, run the following commands***
+Our team has created a mock interview tool that takes a user's resume to generate personalized behavorial interview questions. The user can then be prompted to start the interview and respond with answers to specific questions. These responses are then fed into our backend speech analysis program that analyzes a response based on different NLP, sentiment, and more techniques.
 
-git clone "with the https inside the clone button in git"
+***Important Files***
 
-cd ainterview
+Resume Parsing:
+parser.py
 
-git checkout master ***THIS LINE IS NEEDED***
+Speech Analysis:
+SpeechAnalysis.py
 
-npm install
-
-npm start
-
-***To make changes/push to git***
-
-git pull ***TO UPDATE TO UPDATED STATUS***
-
-git branch ***SHOULD SAY BRANCH IS ON MASTER***
-
-git add *
-
-git commit -m "message"
-
-git push -u origin master ***IF FIRST PUSH**
-
-otherwise
-
-git push
-
-***IMPORTANT***
-If you are working on a big feature that could mess up the code, make sure to create a new branch first!!!!
+UI/UX Design:
+SpeechTest.js
