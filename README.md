@@ -13,11 +13,13 @@ Our team has created a mock interview tool that takes a user's resume to generat
 ***The following files showcase the breadth of the implementation and highlights: *** 
 
 **Resume Parsing:**  
-AInterview-app/src/pages/SpeechTest/SpeechTest/views/parser.py  
-Link: https://github.com/rywu55/AInterview-app/blob/dev/src/pages/SpeechTest/SpeechTest/views/parser.py  
+parser.py  
+SpeechTest.js (onUploadHandler)
+https://github.com/rywu55/AInterview-app/blob/dev/src/pages/SpeechTest/SpeechTest.js#L189  
+https://github.com/rywu55/AInterview-app/blob/dev/src/pages/SpeechTest/SpeechTest/views/parser.py  
 
 **Speech Analysis:**  
-AInterview-app/src/pages/SpeechTest/SpeechTest/views/SpeechAnalysis.py  
+SpeechAnalysis.py  
 Link: https://github.com/rywu55/AInterview-app/blob/dev/src/pages/SpeechTest/SpeechTest/views/speechAnalysis.py  
 
 **UI/UX Design:**  
